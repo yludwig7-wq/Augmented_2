@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <title>Horizontal Parallax</title>
+
+    <style>
+        :root {
+            /* Original dimensions of each PNG layer */
+            --scene-width: 7568px;
+            --scene-height: 768px;
+
+            /* Height of the visible parallax window */
+            --viewer-height: min(100vh, 900px);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background: #111;
+        }
+
+        /*
+      This is the element the user scrolls horizontally.
+    */
+        .parallax-scroller {
+            position: relative;
+            width: 100%;
+            height: var(--viewer-height);
+
+            overflow-x: auto;
+            overflow-y: hidden;
+
+            scroll-behavior: smooth;
+            overscroll-behavior-x: contain;
+            scrollbar-gutter: stable;
+
+            /*
+        Enables horizontal scrolling with touch gestures.
+      */
+            touch-action: pan-x;
+        }
+
+        /*
+      This element creates the 18,920px-wide scrollable area.
+    */
+        .parallax-track {
+            position: relative;
+            width: var(--scene-width);
+            height: 100%;
+        }
+
+        /*
+      The stage remains attached to the left side of the scroll container.
+      JavaScript moves each layer at a different speed.
+    */
+        .parallax-stage {
+            position: sticky;
+            left: 0;
+            top: 0;
+
+            width: 100vw;
+            height: 100%;
+
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            top: 50%;
+            left: 0;
+
+            width: var(--scene-width);
+            height: var(--scene-height);
+
+            object-fit: fill;
+            max-width: none;
+
+            /*
+        Keeps the 1980px-high artwork vertically centered.
+        JavaScript adds translateX().
+      */
+            transform: translate3d(0, -50%, 0);
+
+            will-change: transform;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /*
+      Layer order:
+      layer-back is farthest away.
+      layer-front is closest to the viewer.
+    */
+        .layer-back {
+            z-index: 1;
+        }
+
+        .layer-middle-back {
+            z-index: 2;
+        }
+
+        .layer-middle-front {
+            z-index: 3;
+        }
+
+        .layer-front {
+            z-index: 4;
+        }
+
+        /*
+      Optional scrollbar styling.
+    */
+        .parallax-scroller::-webkit-scrollbar {
+            height: 12px;
+        }
+
+        .parallax-scroller::-webkit-scrollbar-track {
+            background: #222;
+        }
+
+        .parallax-scroller::-webkit-scrollbar-thumb {
+            background: #777;
+            border: 3px solid #222;
+            border-radius: 999px;
+        }
+
+        /*
+      Optional instructions overlay.
+      Remove this element and these styles when not needed.
+    */
+        .scroll-hint {
+            position: absolute;
+            z-index: 10;
+            left: 20px;
+            bottom: 24px;
+
+            padding: 10px 14px;
+            border-radius: 8px;
+
+            color: white;
+            background: rgb(0 0 0 / 55%);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+
+            pointer-events: none;
+            transition: opacity 300ms ease;
+        }
+
+        .scroll-hint.is-hidden {
+            opacity: 0;
+
+
+
+
+            
+        }
+
+
+
+        .parallax-island {
+    position: absolute;
+    top: 50%;
+    z-index: 5; /* über allen Bildlayern */
+
+    width: clamp(250px, 50vw, 600px);
+    height: clamp(250px, 50vw, 600px);
+
+    /* zentriert das Objekt exakt auf den left-Wert */
+    transform: translate(-50%, -50%);
+
+    pointer-events: auto; /* damit man das 3D-Objekt drehen/zoomen kann */
+    background-color: transparent;
+
+
+
+    
+}
+
+
+
+.island-button {
+    position: absolute;
+    top: 85%;
+    z-index: 10;
+
+    padding: 12px 25px;
+
+    background: white;
+    opacity: 0.7;
+    color: black;
+
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+
+    border-radius: 15px;
+    white-space: nowrap;
+    transform: translateX(-50%);
+
+    pointer-events: auto;
+}
+    </style>
+</head>
+
+<body>
+    <div class="parallax-scroller" id="parallaxScroller">
+        <div class="parallax-track">
+            <div class="parallax-stage">
+                <!--
+          Replace these four src values with your PNG files.
+
+          Ideally, all images should:
+          - be 18,920 × 1,980 pixels
+          - have transparent backgrounds where appropriate
+          - line up exactly with each other
+        -->
+
+                <img class="parallax-layer layer-back" src="images/background.png" alt="" data-speed="1"
+                    draggable="false" />
+
+                <img class="parallax-layer layer-middle-back" src="images/Layer3.png" alt=""
+                    data-speed="1" draggable="false" />
+
+                <img class="parallax-layer layer-middle-front" src="images/Layer2.png" alt=""
+                    data-speed="0.93" draggable="false" />
+
+                <img class="parallax-layer layer-front" src="images/Layer1.png" alt="" data-speed="0.88"
+                    draggable="false" />
+
+
+
+
+                <model-viewer class="parallax-island" data-speed="0.95"
+    style="left:757px;"
+    src="models/evilCastle.glb" alt="Insel 1"
+    camera-controls disable-zoom auto-rotate
+    interaction-prompt="none"></model-viewer>
+
+<model-viewer class="parallax-island" data-speed="0.95"
+    style="left:2270px;"
+    src="models/galaxy castle.glb" alt="Insel 2"
+    camera-controls disable-zoom auto-rotate
+    interaction-prompt="none"></model-viewer>
+
+<model-viewer class="parallax-island" data-speed="0.95"
+    style="left:3784px;"
+    src="models/shipohnedelfin.glb" alt="Insel 3"
+    camera-controls disable-zoom auto-rotate
+    interaction-prompt="none"></model-viewer>
+
+<model-viewer class="parallax-island" data-speed="0.95"
+    style="left:5298px;"
+    src="models/holytech.glb" alt="Insel 4"
+    camera-controls disable-zoom auto-rotate
+    interaction-prompt="none"></model-viewer>
+
+<model-viewer class="parallax-island" data-speed="0.95"
+    style="left:6611px;"
+    src="models/candychc.glb" alt="Insel 5"
+    camera-controls disable-zoom auto-rotate
+    interaction-prompt="none"></model-viewer>
+
+<a href="modelsadskel/indexSk.html" class="island-button"
+    data-speed="0.95"
+    style="left: 757px;">
+    What evil lurks in the castle?
+</a>
+
+<a href="modelsadskel/indexSk.html" class="island-button"
+    data-speed="0.95"
+    style="left: 2270px;">
+    Everybody loves mushrooms, but who lives here?
+</a>
+
+<a href="modelsadskel/indexSk.html" class="island-button"
+    data-speed="0.95"
+    style="left: 3784px;">
+    See who rides this ship
+</a>
+
+<a href="modelsadskel/indexSk.html" class="island-button"
+    data-speed="0.95"
+    style="left: 5298px;">
+    what?... who lives here?
+</a>
+
+<a href="modelsadskel/indexSk.html" class="island-button"
+    data-speed="0.95"
+    style="left: 6611px;">
+    Who would live here?
+</a>
+
+
+
+
+            </div>
+        </div>
+            
+        <div class="scroll-hint" id="scrollHint">
+            Scroll horizontally →
+        </div>
+        
+    </div>
+    
+    
+    
+    
+   
+    <script>
+        (() => {
+    const scroller = document.getElementById("parallaxScroller");
+    const layers = [
+    ...document.querySelectorAll(
+        ".parallax-layer, .parallax-island, .island-button"
+    )
+];
+    const scrollHint = document.getElementById("scrollHint");
+
+    let animationFrameId = null;
+
+    function renderParallax() {
+        const scrollPosition = scroller.scrollLeft;
+
+        layers.forEach((layer) => {
+            const speed = Number(layer.dataset.speed) || 1;
+            const horizontalMovement = scrollPosition * speed;
+
+            const isIsland = layer.classList.contains("parallax-island");
+const isButton = layer.classList.contains("island-button");
+
+let baseTransform;
+
+if (isIsland) {
+    baseTransform = `translate(calc(-50% - ${horizontalMovement}px), -50%)`;
+} else if (isButton) {
+    baseTransform = `translate(calc(-50% - ${horizontalMovement}px), 0)`;
+} else {
+    baseTransform = `translate3d(${-horizontalMovement}px, -50%, 0)`;
+}
+
+            layer.style.transform = baseTransform;
+        });
+
+        if (scrollPosition > 30) {
+            scrollHint?.classList.add("is-hidden");
+        } else {
+            scrollHint?.classList.remove("is-hidden");
+        }
+
+        animationFrameId = null;
+    }
+
+    function requestRender() {
+        if (animationFrameId !== null) return;
+        animationFrameId = requestAnimationFrame(renderParallax);
+    }
+
+    scroller.addEventListener("scroll", requestRender, { passive: true });
+    window.addEventListener("resize", requestRender);
+
+    scroller.addEventListener(
+        "wheel",
+        (event) => {
+            const primarilyVertical = Math.abs(event.deltaY) > Math.abs(event.deltaX);
+            if (!primarilyVertical) return;
+
+            const maxScroll = scroller.scrollWidth - scroller.clientWidth;
+            const movingForward = event.deltaY > 0 && scroller.scrollLeft < maxScroll;
+            const movingBackward = event.deltaY < 0 && scroller.scrollLeft > 0;
+
+            if (movingForward || movingBackward) {
+                event.preventDefault();
+                scroller.scrollLeft += event.deltaY;
+            }
+        },
+        { passive: false }
+    );
+
+    renderParallax();
+})();
+
+
+
+
+(() => {
+    const glossySound = new Audio("sounds/glossysound.wav");
+    glossySound.preload = "auto";
+
+    // Small cooldown so rapid drag movement doesn't spam-restart the sound
+    const COOLDOWN_MS = 800;
+    let lastPlayed = 0;
+
+    function playGlossySound() {
+        const now = Date.now();
+        if (now - lastPlayed < COOLDOWN_MS) return;
+        lastPlayed = now;
+
+        // Restart from the beginning even if it's already playing
+        glossySound.currentTime = 0;
+        glossySound.play().catch(() => {
+            // Autoplay-policy errors are safe to ignore here;
+            // this only runs after a real user interaction anyway
+        });
+    }
+
+    const islands = document.querySelectorAll(".parallax-island");
+
+    islands.forEach((island) => {
+        island.addEventListener("camera-change", (event) => {
+            if (event.detail?.source === "user-interaction") {
+                playGlossySound();
+            }
+        });
+    });
+})();
+
+    </script>
+</body>
+
+</html>
