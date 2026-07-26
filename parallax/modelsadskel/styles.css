@@ -1,7 +1,6 @@
 :not(:defined) > * {
   display: none;
 }
-
 html, body {
   height: 100%;
   margin: 0;
@@ -17,7 +16,8 @@ h1 {
 }
 
 model-viewer {
-  flex: 1 1 auto;   /* füllt den Rest der Höhe */
+  flex: 1 1 auto;
+  min-height: 0;   /* wichtig! */
   width: 100%;
 }
 
