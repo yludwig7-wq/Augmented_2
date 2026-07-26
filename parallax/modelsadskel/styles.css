@@ -5,18 +5,39 @@ html, body {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
-}
-
-h1 {
-  flex: 0 0 auto;   /* nimmt nur so viel Platz wie nötig */
+  position: relative;   /* Bezugsrahmen für das h1 */
 }
 
 model-viewer {
-  flex: 1 1 auto;
-  min-height: 0;   /* wichtig! */
   width: 100%;
+  height: 100%;         /* füllt wieder den ganzen Screen */
+}
+
+h1 {
+  position: absolute;
+  top: 20px;             /* Abstand von oben, statt im Fluss */
+  left: 0;
+  right: 0;
+  z-index: 10;            /* liegt über model-viewer */
+  text-align: center;
+  pointer-events: none;   /* Klicks gehen "durch" den Text zum model-viewer, wichtig für Kamera-Steuerung! */
+  margin: 0;
+
+
+
+  
+  font-size: 8vw;         /* responsive, viel größer als 70% */
+  font-weight: bold;
+  background: linear-gradient(
+    90deg,
+    #ff0000, #ff8000, #ffff00, #00ff00,
+    #00ffff, #0000ff, #8000ff, #ff0000
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
 }
 
 
@@ -108,18 +129,3 @@ model-viewer > #ar-prompt > img {
   animation: circle 4s linear infinite;
 }
 
-
-h1 {
-  font-size: 70%;
-  font-weight: bold;
-  background: linear-gradient(
-    90deg,
-    #ff0000, #ff8000, #ffff00, #00ff00,
-    #00ffff, #0000ff, #8000ff, #ff0000
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  margin-left: 20%;
-}
