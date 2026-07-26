@@ -2,21 +2,23 @@
   display: none;
 }
 
-html {
+html, body {
   height: 100%;
+  margin: 0;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  flex: 0 0 auto;   /* nimmt nur so viel Platz wie nötig */
 }
 
 model-viewer {
+  flex: 1 1 auto;   /* füllt den Rest der Höhe */
   width: 100%;
-  height: 90%;
-  background-color: #ffffff;
 }
 
 
@@ -110,7 +112,7 @@ model-viewer > #ar-prompt > img {
 
 
 h1 {
-  font-size: 2rem;
+  font-size: 70%;
   font-weight: bold;
   background: linear-gradient(
     90deg,
